@@ -1,6 +1,6 @@
 import { Either, makeLeft, makeRight } from "../helper/either-monad";
 
-type ValidationError = "TooShort" | "InvalidFormat";
+type ValidationError = "TooShort" | "TooLong" | "InvalidFormat";
 
 type ValidationResult = {
   nit: string;
@@ -13,6 +13,8 @@ function convertValidationErrorToHelpText(error: ValidationError): string {
       return "El NIT debe tener al menos 8 dígitos";
     case "InvalidFormat":
       return "El NIT debe tener un formato válido";
+    case "TooLong":
+      return "El NIT debe tener máximo 10 dígitos";
     default:
       return "Error desconocido";
   }
@@ -32,6 +34,10 @@ function calculateNITVerificationDigit(
 
   if (nitDigits.length < 8) {
     errors.push("TooShort");
+  }
+
+  if (nitDigits.length > 10) {
+    errors.push("TooLong");
   }
 
   if (!nitRegex.test(nit)) {
