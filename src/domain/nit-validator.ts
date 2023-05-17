@@ -3,9 +3,8 @@ import { Either, makeLeft, makeRight } from "../helper/either-monad";
 type ValidationError =
   | "TooShort"
   | "TooLong"
-  | "InvalidFormat"
-  | "InvalidRange";
-
+  | "InvalidFormat";
+  
 type ValidationResult = {
   nit: string;
   verificationDigit: string;
@@ -15,8 +14,10 @@ function convertValidationErrorToHelpText(error: ValidationError): string {
   switch (error) {
     case "InvalidFormat":
       return "El NIT debe tener un formato válido";
+    case "TooShort":
+      return "El NIT debe tener mínimo 1 dígito";
     case "TooLong":
-      return "El NIT debe tener máximo 10 dígitos";
+      return "El NIT debe tener máximo 12 dígitos";
     default:
       return "Error desconocido";
   }
@@ -37,9 +38,13 @@ function addZeroesToLeft(nit: string): string {
 function calculateNITVerificationDigit(
   nit: string
 ): Either<ValidationError[], ValidationResult> {
-  const nitRegex = /^[0-9]{1,13}-?[0-9]$/;
+  const nitRegex = /^[0-9]{1,13}$/;
 
   let errors: ValidationError[] = [];
+
+  if (nit.length == 0) {
+    errors.push("TooShort");
+  }
 
   if (nit.length > 12) {
     errors.push("TooLong");
