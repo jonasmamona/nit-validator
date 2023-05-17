@@ -14,7 +14,7 @@ export function NitValidator() {
   const [errors, setErrors] = useState<string>("");
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    if(event.target.value.length > 13) return;
+    if(event.target.value.length > 12) return;
 
     setNit(event.target.value);
     let result = calculateNITVerificationDigit(event.target.value);
